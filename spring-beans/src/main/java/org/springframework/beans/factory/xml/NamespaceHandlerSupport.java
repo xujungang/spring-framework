@@ -71,7 +71,7 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		BeanDefinitionParser parser = findParserForElement(element, parserContext);
-		return (parser != null ? parser.parse(element, parserContext) : null);
+		return (parser != null ? parser.parse(element, parserContext) : null);	// TODO 源码: parser.parse(element, parserContext)调用的是AbstractBeanDefinitionParser的parse
 	}
 
 	/**
@@ -80,8 +80,8 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 */
 	@Nullable
 	private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) {
-		String localName = parserContext.getDelegate().getLocalName(element);
-		BeanDefinitionParser parser = this.parsers.get(localName);
+		String localName = parserContext.getDelegate().getLocalName(element);	// TODO 源码: 获取元素名称.例如:tx:annotation-driven中的annotation-driven
+		BeanDefinitionParser parser = this.parsers.get(localName);	// TODO 源码: 根据localName获取对应的解析器.解析器是在handler.init()时注册的
 		if (parser == null) {
 			parserContext.getReaderContext().fatal(
 					"Cannot locate BeanDefinitionParser for element [" + localName + "]", element);

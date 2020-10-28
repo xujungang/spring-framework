@@ -798,10 +798,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						"Validation of bean definition failed", ex);
 			}
 		}
-
+		// TODO 源码: 查询beanName是否已经注册
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
-		if (existingDefinition != null) {
-			if (!isAllowBeanDefinitionOverriding()) {
+		if (existingDefinition != null) {	// TODO 源码: 对应的beanName已经注册
+			if (!isAllowBeanDefinitionOverriding()) {	// TODO 源码: 置中配置了bean不允许被覆盖,则会抛出异常
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 						"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
 						"': There is already [" + existingDefinition + "] bound.");
@@ -828,9 +828,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							"] with [" + beanDefinition + "]");
 				}
 			}
-			this.beanDefinitionMap.put(beanName, beanDefinition);
+			this.beanDefinitionMap.put(beanName, beanDefinition);	// TODO 源码: 使用新的BeanDefinition替换旧的BeanDefinition
 		}
-		else {
+		else {	// TODO 源码: beanName未被注册,将BeanDefinition添加到Map中
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {

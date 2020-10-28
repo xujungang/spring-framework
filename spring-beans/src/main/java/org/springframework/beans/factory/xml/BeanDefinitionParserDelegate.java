@@ -412,8 +412,8 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		String id = ele.getAttribute(ID_ATTRIBUTE);
-		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
+		String id = ele.getAttribute(ID_ATTRIBUTE);			// TODO 源码: 解析id
+		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);	// TODO 源码: 解析name
 
 		List<String> aliases = new ArrayList<>();
 		if (StringUtils.hasLength(nameAttr)) {
@@ -438,7 +438,7 @@ public class BeanDefinitionParserDelegate {
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
 				try {
-					if (containingBean != null) {
+					if (containingBean != null) {	// TODO 源码: 如果不存在beanName,那么根据Spring中提供的命名规则为当前bean生成对应的beanName
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
 								beanDefinition, this.readerContext.getRegistry(), true);
 					}
@@ -492,7 +492,7 @@ public class BeanDefinitionParserDelegate {
 		this.usedNames.addAll(aliases);
 	}
 
-	/**
+	/** TODO 源码: 解析bean定义本身，而不考虑名称或别名。如果在解析bean定义的过程中出现问题，则可能返回null。
 	 * Parse the bean definition itself, without regard to name or aliases. May return
 	 * {@code null} if problems occurred during the parsing of the bean definition.
 	 */
@@ -503,27 +503,27 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
+		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {	// TODO 源码: 解析class属性
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 		String parent = null;
-		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
+		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {	// TODO 源码: 解析parent属性
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
 		try {
-			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
+			AbstractBeanDefinition bd = createBeanDefinition(className, parent);	// TODO 源码: 创建GenericBeanDefinition对象
 
-			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);	// TODO 源码: 解析默认bean各个属性:scope,init-method,destroy-method,lazy-init等等
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
-			parseMetaElements(ele, bd);
-			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
-			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
+			parseMetaElements(ele, bd);										// TODO 源码: 解析元数据 meta
+			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());	// TODO 源码: 解析lookup-method属性.lookup-method:获取器注入
+			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());	// TODO 源码: 解析replaced-method属性
 
-			parseConstructorArgElements(ele, bd);
-			parsePropertyElements(ele, bd);
-			parseQualifierElements(ele, bd);
+			parseConstructorArgElements(ele, bd);							// TODO 源码: 解析构造方法
+			parsePropertyElements(ele, bd);									// TODO 源码: 解析property子元素
+			parseQualifierElements(ele, bd);								// TODO 源码: 解析qualifier子元素
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
@@ -696,7 +696,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, CONSTRUCTOR_ARG_ELEMENT)) {
-				parseConstructorArgElement((Element) node, bd);
+				parseConstructorArgElement((Element) node, bd);	// TODO 源码: 解析constructor-arg
 			}
 		}
 	}
@@ -788,7 +788,7 @@ public class BeanDefinitionParserDelegate {
 				else {
 					try {
 						this.parseState.push(new ConstructorArgumentEntry(index));
-						Object value = parsePropertyValue(ele, bd, null);
+						Object value = parsePropertyValue(ele, bd, null);	// TODO 源码: 解析ele对应的属性元素
 						ConstructorArgumentValues.ValueHolder valueHolder = new ConstructorArgumentValues.ValueHolder(value);
 						if (StringUtils.hasLength(typeAttr)) {
 							valueHolder.setType(typeAttr);
@@ -936,7 +936,7 @@ public class BeanDefinitionParserDelegate {
 					" is only allowed to contain either 'ref' attribute OR 'value' attribute OR sub-element", ele);
 		}
 
-		if (hasRefAttribute) {
+		if (hasRefAttribute) {	// TODO 源码: ref属性使用RuntimeBeanReference封装对应的ref名称
 			String refName = ele.getAttribute(REF_ATTRIBUTE);
 			if (!StringUtils.hasText(refName)) {
 				error(elementName + " contains empty 'ref' attribute", ele);
@@ -945,15 +945,15 @@ public class BeanDefinitionParserDelegate {
 			ref.setSource(extractSource(ele));
 			return ref;
 		}
-		else if (hasValueAttribute) {
+		else if (hasValueAttribute) {	// TODO 源码: value属性使用TypeStringValue封装
 			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE));
 			valueHolder.setSource(extractSource(ele));
 			return valueHolder;
 		}
-		else if (subElement != null) {
+		else if (subElement != null) {	// TODO 源码: 解析子元素
 			return parsePropertySubElement(subElement, bd);
 		}
-		else {
+		else {	// TODO 源码: ref,value,子元素都没有,无法继续执行
 			// Neither child element nor "ref" or "value" attribute found.
 			error(elementName + " must specify a ref or value", ele);
 			return null;
@@ -971,7 +971,7 @@ public class BeanDefinitionParserDelegate {
 		return parsePropertySubElement(ele, bd, null);
 	}
 
-	/**
+	/** TODO 源码: 对constructor-arg资源组的解析
 	 * Parse a value, ref or collection sub-element of a property or
 	 * constructor-arg element.
 	 * @param ele subelement of property element; we don't know which yet
@@ -1374,21 +1374,21 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Parse a custom element (outside of the default namespace).
 	 * @param ele the element to parse
-	 * @param containingBd the containing bean definition (if any)
+	 * @param containingBd the containing bean definition (if any) TODO 源码: 父类bean,顶层元素解析设置为null
 	 * @return the resulting bean definition
 	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
-		String namespaceUri = getNamespaceURI(ele);
+		String namespaceUri = getNamespaceURI(ele);	// TODO 源码: 获取命名空间
 		if (namespaceUri == null) {
 			return null;
 		}
-		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
+		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);	// TODO 源码: 根据命名空间获取对应的NamespaceHandler
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
-		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
+		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));	// TODO 源码: 调用自定义的NamespaceHandler进行解析,parse方法在父类(NamespaceHandlerSupport)
 	}
 
 	/**
@@ -1405,7 +1405,7 @@ public class BeanDefinitionParserDelegate {
 	 * Decorate the given bean definition through a namespace handler, if applicable.
 	 * @param ele the current element
 	 * @param originalDef the current bean definition
-	 * @param containingBd the containing bean definition (if any)
+	 * @param containingBd the containing bean definition (if any) TODO 源码: 传递的是父类的bean,对某个嵌套进行分析是,传递父类的BeanDefinition,主要是使用scope
 	 * @return the decorated bean definition
 	 */
 	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(
@@ -1415,14 +1415,14 @@ public class BeanDefinitionParserDelegate {
 
 		// Decorate based on custom attributes first.
 		NamedNodeMap attributes = ele.getAttributes();
-		for (int i = 0; i < attributes.getLength(); i++) {
+		for (int i = 0; i < attributes.getLength(); i++) {	// TODO 源码: 遍历所有属性
 			Node node = attributes.item(i);
 			finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);
 		}
 
 		// Decorate based on custom nested elements.
 		NodeList children = ele.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
+		for (int i = 0; i < children.getLength(); i++) {	// TODO 源码: 遍历所有子元素
 			Node node = children.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);

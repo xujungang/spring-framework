@@ -50,7 +50,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.xml.SimpleSaxErrorHandler;
 import org.springframework.util.xml.XmlValidationModeDetector;
 
-/**
+/** TODO 源码: 项目本身可以提供一个如何寻找DTD声明的方法
  * Bean definition reader for XML bean definitions.
  * Delegates the actual XML document reading to an implementation
  * of the {@link BeanDefinitionDocumentReader} interface.
@@ -252,7 +252,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		this.entityResolver = entityResolver;
 	}
 
-	/**
+	/** TODO 源码: 项目本身可以提供一个如何寻找DTD声明的方法
 	 * Return the EntityResolver to use, building a default resolver
 	 * if none specified.
 	 */
@@ -317,7 +317,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			logger.info("Loading XML bean definitions from " + encodedResource);
 		}
 
-		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
+		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();	// TODO 源码: 通过属性来记录已经加载的资源
 		if (currentResources == null) {
 			currentResources = new HashSet<>(4);
 			this.resourcesCurrentlyBeingLoaded.set(currentResources);
@@ -327,13 +327,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
-			InputStream inputStream = encodedResource.getResource().getInputStream();
+			InputStream inputStream = encodedResource.getResource().getInputStream();	// TODO 源码: 从encodedResource中获取已经封装的Resource对象并再次从Resource中获取其中的InputStream
 			try {
 				InputSource inputSource = new InputSource(inputStream);
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
-				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
+				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());	// TODO 源码: 核心逻辑
 			}
 			finally {
 				inputStream.close();
@@ -389,7 +389,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 		try {
 			Document doc = doLoadDocument(inputSource, resource);
-			return registerBeanDefinitions(doc, resource);
+			return registerBeanDefinitions(doc, resource);	// TODO 源码: 加载和注册bean
 		}
 		catch (BeanDefinitionStoreException ex) {
 			throw ex;
@@ -440,10 +440,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	protected int getValidationModeForResource(Resource resource) {
 		int validationModeToUse = getValidationMode();
-		if (validationModeToUse != VALIDATION_AUTO) {
+		if (validationModeToUse != VALIDATION_AUTO) {	// TODO 源码: 手动指定验证模式,则使用指定的验证模式
 			return validationModeToUse;
 		}
-		int detectedMode = detectValidationMode(resource);
+		int detectedMode = detectValidationMode(resource);	// TODO 源码: 如果未指定则使用自动检测
 		if (detectedMode != VALIDATION_AUTO) {
 			return detectedMode;
 		}
@@ -504,9 +504,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		int countBefore = getRegistry().getBeanDefinitionCount();
-		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
-		return getRegistry().getBeanDefinitionCount() - countBefore;
+		int countBefore = getRegistry().getBeanDefinitionCount();					// TODO 源码: 记录统计前BeanDefinition的加载个数
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));	// TODO 源码: 加载及注册bean
+		return getRegistry().getBeanDefinitionCount() - countBefore;				// TODO 源码: 记录统计后BeanDefinition的加载个数
 	}
 
 	/**

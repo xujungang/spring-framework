@@ -59,13 +59,13 @@ public class SimpleAliasRegistry implements AliasRegistry {
 				}
 			}
 			else {
-				String registeredName = this.aliasMap.get(alias);
+				String registeredName = this.aliasMap.get(alias);	// TODO 源码: 查询已有别名
 				if (registeredName != null) {
 					if (registeredName.equals(name)) {
 						// An existing alias - no need to re-register
 						return;
 					}
-					if (!allowAliasOverriding()) {
+					if (!allowAliasOverriding()) {	// TODO 源码: 如果别名不允许被覆盖,抛出异常
 						throw new IllegalStateException("Cannot define alias '" + alias + "' for name '" +
 								name + "': It is already registered for name '" + registeredName + "'.");
 					}
@@ -74,8 +74,8 @@ public class SimpleAliasRegistry implements AliasRegistry {
 								registeredName + "' with new target name '" + name + "'");
 					}
 				}
-				checkForAliasCircle(name, alias);
-				this.aliasMap.put(alias, name);
+				checkForAliasCircle(name, alias);	// TODO 源码: 当A->B存在是,若再次出现A->C->B时候则会抛出异常
+				this.aliasMap.put(alias, name);		// TODO 源码: 注册别名
 				if (logger.isDebugEnabled()) {
 					logger.debug("Alias definition '" + alias + "' registered for name '" + name + "'");
 				}

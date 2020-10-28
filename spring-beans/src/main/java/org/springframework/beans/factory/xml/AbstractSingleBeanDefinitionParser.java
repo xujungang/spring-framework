@@ -65,12 +65,12 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		if (parentName != null) {
 			builder.getRawBeanDefinition().setParentName(parentName);
 		}
-		Class<?> beanClass = getBeanClass(element);
+		Class<?> beanClass = getBeanClass(element);	// TODO 源码: 获取自动以标签的class.此时会调用自定义解析器的getBeanClass方法
 		if (beanClass != null) {
 			builder.getRawBeanDefinition().setBeanClass(beanClass);
 		}
 		else {
-			String beanClassName = getBeanClassName(element);
+			String beanClassName = getBeanClassName(element);	// TODO 源码: 若子类没用重写getBeanClass方法,则检查子类是否重写了getBeanClassName方法
 			if (beanClassName != null) {
 				builder.getRawBeanDefinition().setBeanClassName(beanClassName);
 			}
@@ -78,7 +78,7 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		builder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
 		BeanDefinition containingBd = parserContext.getContainingBeanDefinition();
 		if (containingBd != null) {
-			// Inner bean definition must receive same scope as containing bean.
+			// Inner bean definition must receive same scope as containing bean.	TODO 源码: 若存在父类,使用父类的scope
 			builder.setScope(containingBd.getScope());
 		}
 		if (parserContext.isDefaultLazyInit()) {

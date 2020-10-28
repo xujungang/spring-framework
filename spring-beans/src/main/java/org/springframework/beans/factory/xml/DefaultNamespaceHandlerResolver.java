@@ -115,25 +115,25 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	@Override
 	@Nullable
 	public NamespaceHandler resolve(String namespaceUri) {
-		Map<String, Object> handlerMappings = getHandlerMappings();
-		Object handlerOrClassName = handlerMappings.get(namespaceUri);
+		Map<String, Object> handlerMappings = getHandlerMappings();	// TODO 源码: 获取所有已经配置的handler配置
+		Object handlerOrClassName = handlerMappings.get(namespaceUri);	// TODO 源码: 给句命名空间找到对应的信息
 		if (handlerOrClassName == null) {
 			return null;
 		}
 		else if (handlerOrClassName instanceof NamespaceHandler) {
-			return (NamespaceHandler) handlerOrClassName;
+			return (NamespaceHandler) handlerOrClassName;	// TODO 源码: 已经做过解析的情况,直接从缓存中读取
 		}
-		else {
-			String className = (String) handlerOrClassName;
+		else {	// TODO 源码: 开始解析
+			String className = (String) handlerOrClassName;	// TODO 源码: 没有解析,则返回的是类路径
 			try {
-				Class<?> handlerClass = ClassUtils.forName(className, this.classLoader);
+				Class<?> handlerClass = ClassUtils.forName(className, this.classLoader);	// TODO 源码: 通过反射得到类对象
 				if (!NamespaceHandler.class.isAssignableFrom(handlerClass)) {
 					throw new FatalBeanException("Class [" + className + "] for namespace [" + namespaceUri +
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
-				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
-				namespaceHandler.init();
-				handlerMappings.put(namespaceUri, namespaceHandler);
+				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);	// TODO 源码: 初始化类
+				namespaceHandler.init();	// TODO 源码: 调用自定义的NamespaceHandler的初始化方法
+				handlerMappings.put(namespaceUri, namespaceHandler);	// TODO 源码: 将解析后的信息添加到缓存中
 				return namespaceHandler;
 			}
 			catch (ClassNotFoundException ex) {
@@ -161,12 +161,12 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 					}
 					try {
 						Properties mappings =
-								PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);
+								PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);// TODO 源码: this.handlerMappingsLocation初始化时已经被指定为META-INF/Spring.handlers
 						if (logger.isDebugEnabled()) {
 							logger.debug("Loaded NamespaceHandler mappings: " + mappings);
 						}
 						handlerMappings = new ConcurrentHashMap<>(mappings.size());
-						CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);
+						CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);// TODO 源码: 将Properties格式文件合并到Map格式的handlerMappings中
 						this.handlerMappings = handlerMappings;
 					}
 					catch (IOException ex) {
