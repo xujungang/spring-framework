@@ -119,17 +119,17 @@ public abstract class AopConfigUtils {
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
-
-		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
+		// TODO 源码: 如果已经存在了自动代理创建器且存在的自动代理创建器与现在的不一致,那么需要根据优先级判断到底使用哪个
+		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {// TODO 源码: AUTO_PROXY_CREATOR_BEAN_NAME = org.springframework.aop.config.internalAutoProxyCreator
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
 				if (currentPriority < requiredPriority) {
-					apcDefinition.setBeanClassName(cls.getName());
+					apcDefinition.setBeanClassName(cls.getName());	// TODO 源码: 改变bean最重要的就是改变对应的className属性
 				}
 			}
-			return null;
+			return null;// TODO 源码: 入股偶已经存在自动代理创建起并且与将要创建的一致,那么无需再次创建
 		}
 
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);

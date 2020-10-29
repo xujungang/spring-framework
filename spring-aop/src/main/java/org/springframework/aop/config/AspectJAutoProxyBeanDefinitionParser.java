@@ -41,7 +41,7 @@ class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);
+		AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);	// TODO 源码: 注册AspectJAnnotationAutoProxyCreator核心逻辑
 		extendBeanDefinition(element, parserContext);
 		return null;
 	}

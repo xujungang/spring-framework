@@ -110,7 +110,7 @@ class InstantiationModelAwarePointcutAdvisorImpl
 			// A singleton aspect.
 			this.pointcut = this.declaredPointcut;
 			this.lazy = false;
-			this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);
+			this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);// TODO 源码: 完成对增强器的初始化.
 		}
 	}
 
@@ -144,7 +144,7 @@ class InstantiationModelAwarePointcutAdvisorImpl
 		}
 		return this.instantiatedAdvice;
 	}
-
+	/** TODO 源码: 根据注解中的信息初始化对应的增强器.因为不同的增强所体现的逻辑是不同的,所以就需要通不通的增强器来完成不同的逻辑. */
 	private Advice instantiateAdvice(AspectJExpressionPointcut pointcut) {
 		Advice advice = this.aspectJAdvisorFactory.getAdvice(this.aspectJAdviceMethod, pointcut,
 				this.aspectInstanceFactory, this.declarationOrder, this.aspectName);

@@ -293,7 +293,7 @@ public abstract class AopUtils {
 		}
 	}
 
-	/**
+	/** TODO 源码: 寻找所有增强器中适用于当前class的增强器.引介增强和普通的增强处理不一样,所以分开处理
 	 * Determine the sublist of the {@code candidateAdvisors} list
 	 * that is applicable to the given class.
 	 * @param candidateAdvisors the Advisors to evaluate
@@ -306,18 +306,18 @@ public abstract class AopUtils {
 			return candidateAdvisors;
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
-		for (Advisor candidate : candidateAdvisors) {
-			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
+		for (Advisor candidate : candidateAdvisors) {// TODO 源码: 首先处理引介增强
+			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {	// TODO 源码: canApply 真正实现匹配逻辑
 				eligibleAdvisors.add(candidate);
 			}
 		}
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
 		for (Advisor candidate : candidateAdvisors) {
-			if (candidate instanceof IntroductionAdvisor) {
+			if (candidate instanceof IntroductionAdvisor) {// TODO 源码: 引介增强已经处理
 				// already processed
 				continue;
 			}
-			if (canApply(candidate, clazz, hasIntroductions)) {
+			if (canApply(candidate, clazz, hasIntroductions)) {// TODO 源码: 对于普通bean的处理
 				eligibleAdvisors.add(candidate);
 			}
 		}

@@ -73,21 +73,21 @@ public abstract class AopNamespaceUtils {
 
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
-
+		// TODO 源码: 注册或升级AutoProxyCreateor定义beanName为 org.Springframework.aop.config.internalAutoProxyCreator的BeanDefinition
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
-		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
-		registerComponentIfNecessary(beanDefinition, parserContext);
-	}
-
+		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);// TODO 源码: 对于 proxy-target-class 以及 expose-proxy 属性的处理
+		registerComponentIfNecessary(beanDefinition, parserContext);// TODO 源码: 注册组件并通知,便于监听器做进一步处理.其中BeanDefinition的className 是 AnnotationAwareAspectJAutoProxyCreator.
+	}	// TODO 源码: 创建AOP代理: AnnotationAwareAspectJAutoProxyCreator实现了BeanPostProcessor接口,在父类 AbstractAutoProxyCreator 中重写了postProcessAfterInitialization方法
+	/** TODO 源码: proxy-target-class:SpringAOP使用JDK动态代理(false),还是使用CGLIB来为目标对象创建代理(true). expose-proxy:解决内部自我调用无法实施切面增强.expose-proxy="true",((接口)AopContext.currentProxy()).方法即可 */
 	private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry, @Nullable Element sourceElement) {
 		if (sourceElement != null) {
 			boolean proxyTargetClass = Boolean.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));
-			if (proxyTargetClass) {
+			if (proxyTargetClass) {// TODO 源码: 对 proxy-target-class 的处理.其实强制使用的过程也只是一个属性的设置的过程
 				AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 			}
 			boolean exposeProxy = Boolean.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));
-			if (exposeProxy) {
+			if (exposeProxy) {// TODO 源码: 对 expose-proxy 的处理
 				AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);
 			}
 		}

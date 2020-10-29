@@ -297,9 +297,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Override
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) throws BeansException {
 		if (bean != null) {
-			Object cacheKey = getCacheKey(bean.getClass(), beanName);
+			Object cacheKey = getCacheKey(bean.getClass(), beanName);	// TODO 源码: 根据给定的bean的class和name创建一个key,格式:beanClassName_beanName
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
-				return wrapIfNecessary(bean, beanName, cacheKey);
+				return wrapIfNecessary(bean, beanName, cacheKey);	// TODO 源码: 如果适合被代理,则需要封装指定的bean
 			}
 		}
 		return bean;
@@ -335,23 +335,23 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @return a proxy wrapping the bean, or the raw bean instance as-is
 	 */
 	protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) {
-		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
+		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {// TODO 源码: 如果已经被处理,直接返回
 			return bean;
 		}
-		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
+		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {// TODO 源码: 无需增强,直接返回
 			return bean;
 		}
-		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
+		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {// TODO 源码: 给定的bean是否代表一个基础设施类,基础设施类不应该被代理,或者配置了指定bean不需要自动代理
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
-		// Create proxy if we have advice.
-		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
-		if (specificInterceptors != DO_NOT_PROXY) {
+		// Create proxy if we have advice. TODO 源码: 存在增强方法创建代理
+		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);// TODO 源码: 真正创建代理的代码(获取增强)
+		if (specificInterceptors != DO_NOT_PROXY) {// TODO 源码: 如果获取到了增强,则需要针对增强创建代理
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
 			Object proxy = createProxy(
-					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));// TODO 源码: 创建代理
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
@@ -447,8 +447,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		ProxyFactory proxyFactory = new ProxyFactory();
-		proxyFactory.copyFrom(this);
-
+		proxyFactory.copyFrom(this);	// TODO 源码: 获取当前类的相关属性
+		// TODO 源码: 判断给定的bean是否应该使用targetClass而不是他的接口代理,检查proxyTargetClass设置以及preserveTargetClass属性
 		if (!proxyFactory.isProxyTargetClass()) {
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
@@ -459,10 +459,10 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
-		proxyFactory.addAdvisors(advisors);
-		proxyFactory.setTargetSource(targetSource);
-		customizeProxyFactory(proxyFactory);
-
+		proxyFactory.addAdvisors(advisors);			// TODO 源码: 加入增强器
+		proxyFactory.setTargetSource(targetSource);	// TODO 源码: 设置要代理类
+		customizeProxyFactory(proxyFactory);		// TODO 源码: 定制代理
+		// TODO 源码: 用来控制代理工厂被配置之后,是否还允许修改通知.默认值为false(即在代理被配置之后,不允许修改代理的配置)
 		proxyFactory.setFrozen(this.freezeProxy);
 		if (advisorsPreFiltered()) {
 			proxyFactory.setPreFiltered(true);

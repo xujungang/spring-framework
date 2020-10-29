@@ -90,24 +90,24 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
-							this.beanFactory, Object.class, true, false);
+							this.beanFactory, Object.class, true, false);// TODO 源码: 获取所有的beanName
 					for (String beanName : beanNames) {
-						if (!isEligibleBean(beanName)) {
+						if (!isEligibleBean(beanName)) {// TODO 源码: 不合法的bean直接略过
 							continue;
 						}
 						// We must be careful not to instantiate beans eagerly as in this case they
 						// would be cached by the Spring container but would not have been weaved.
-						Class<?> beanType = this.beanFactory.getType(beanName);
+						Class<?> beanType = this.beanFactory.getType(beanName);// TODO 源码: 获取bean的类型
 						if (beanType == null) {
 							continue;
 						}
-						if (this.advisorFactory.isAspect(beanType)) {
+						if (this.advisorFactory.isAspect(beanType)) {// TODO 源码: 如果存在Aspect注解
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
-								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
+								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);// TODO 源码: 解析标记AspectJ主键中的增强方法 核心流程
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);
 								}
