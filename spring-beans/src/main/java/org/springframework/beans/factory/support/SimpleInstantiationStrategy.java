@@ -56,11 +56,11 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 		return currentlyInvokedFactoryMethod.get();
 	}
 
-
+	/** TODO 源码: 如果有需要覆盖或者替换的方法则使用cglib进行动态代理,因为可以在创建代理的同时将动态方法织入勒种.如果没有需要动态改变的方法,为了方便,直接反射就可以了 */
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
 		// Don't override the class with CGLIB if no overrides.
-		if (!bd.hasMethodOverrides()) {
+		if (!bd.hasMethodOverrides()) {	// TODO 源码: 没有需要覆盖或者替换的方法
 			Constructor<?> constructorToUse;
 			synchronized (bd.constructorArgumentLock) {
 				constructorToUse = (Constructor<?>) bd.resolvedConstructorOrFactoryMethod;
@@ -87,7 +87,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
-			// Must generate CGLIB subclass.
+			// Must generate CGLIB subclass. TODO 源码: CglibSubclassingInstantiationStrategy
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
 	}

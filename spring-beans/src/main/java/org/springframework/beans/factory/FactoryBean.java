@@ -18,7 +18,7 @@ package org.springframework.beans.factory;
 
 import org.springframework.lang.Nullable;
 
-/**
+/** TODO 源码: 一般情况下,Spring通过反射机制利用bean的class属性指定实现类来实例化bean.某些情况下,实例化bean的过程比较复杂,采用编码的方式可能会是一个比较简单的实现方案.
  * Interface to be implemented by objects used within a {@link BeanFactory} which
  * are themselves factories for individual objects. If a bean implements this
  * interface, it is used as a factory for an object to expose, not directly as a
@@ -64,7 +64,7 @@ import org.springframework.lang.Nullable;
  */
 public interface FactoryBean<T> {
 
-	/**
+	/** TODO 源码: 如果配置的bean的实现类是FactoryBean是通过getBean返回的不是FactoryBean本身,而是FactoryBean#getObject方法返回的对象
 	 * Return an instance (possibly shared or independent) of the object
 	 * managed by this factory.
 	 * <p>As with a {@link BeanFactory}, this allows support for both the
