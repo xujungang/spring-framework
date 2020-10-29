@@ -139,9 +139,9 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 			throws BeansException {
 
 		super(parent);
-		setConfigLocations(configLocations);
+		setConfigLocations(configLocations);	// TODO 源码: 设置配置文件
 		if (refresh) {
-			refresh();
+			refresh();	// TODO 源码: 解析及功能实现核心逻辑
 		}
 	}
 

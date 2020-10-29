@@ -112,7 +112,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 
-	/**
+	/** TODO 源码: 初始化BeanFactory,并进行XML文件读取,将得到的BeanFactory记录在当前实体的属性中
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
@@ -124,10 +124,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			DefaultListableBeanFactory beanFactory = createBeanFactory();	// TODO 源码: 创建DefaultListableBeanFactory
 			beanFactory.setSerializationId(getId());
-			customizeBeanFactory(beanFactory);
-			loadBeanDefinitions(beanFactory);
+			customizeBeanFactory(beanFactory);	// TODO 源码: 定制BeanFactory,设置相关属性,包括是否允许覆盖同名称不同定义的对象以及循环依赖
+			loadBeanDefinitions(beanFactory);	// TODO 源码: 初始化DocumentReader,并进行XML文件读取及解析
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {
@@ -203,7 +203,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * <p>The default implementation applies this context's
 	 * {@linkplain #setAllowBeanDefinitionOverriding "allowBeanDefinitionOverriding"}
 	 * and {@linkplain #setAllowCircularReferences "allowCircularReferences"} settings,
-	 * if specified. Can be overridden in subclasses to customize any of
+	 * if specified. Can be overridden in subclasses to customize any of TODO 源码: 如果需要定制化设置,使用子类覆盖此方法
 	 * {@link DefaultListableBeanFactory}'s settings.
 	 * @param beanFactory the newly created bean factory for this context
 	 * @see DefaultListableBeanFactory#setAllowBeanDefinitionOverriding
@@ -212,10 +212,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
-		if (this.allowBeanDefinitionOverriding != null) {
+		if (this.allowBeanDefinitionOverriding != null) {	// TODO 源码: 是否允许覆盖同名称不同定义对象
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
-		if (this.allowCircularReferences != null) {
+		if (this.allowCircularReferences != null) {			// TODO 源码: 是否允许bean之间存在循环依赖
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}
 	}
