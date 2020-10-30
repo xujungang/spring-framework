@@ -280,34 +280,34 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		// If the transaction attribute is null, the method is non-transactional.
 		TransactionAttributeSource tas = getTransactionAttributeSource();
-		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
-		final PlatformTransactionManager tm = determineTransactionManager(txAttr);
-		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
+		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);// TODO 源码: 获取对应事务的属性
+		final PlatformTransactionManager tm = determineTransactionManager(txAttr);									// TODO 源码: 获取BeanFactory中的
+		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);	// TODO 源码: 构建方法唯一标识:类.方法.例如:xxx.xxx.XxServiceImpl.method
 
-		if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {
+		if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {// TODO 源码: 声明式事务处理
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
-			TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);
+			TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);// TODO 源码: 创建TransactionInfo(包含TransactionAttribute,PlatformTransactionManager,TransactionStatus等信息)
 
 			Object retVal;
 			try {
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
-				retVal = invocation.proceedWithInvocation();
+				retVal = invocation.proceedWithInvocation();// TODO 源码: 执行被增强方法
 			}
 			catch (Throwable ex) {
 				// target invocation exception
-				completeTransactionAfterThrowing(txInfo, ex);
+				completeTransactionAfterThrowing(txInfo, ex);// TODO 源码: 异常回滚
 				throw ex;
 			}
 			finally {
-				cleanupTransactionInfo(txInfo);
+				cleanupTransactionInfo(txInfo);// TODO 源码: 消除信息
 			}
-			commitTransactionAfterReturning(txInfo);
+			commitTransactionAfterReturning(txInfo);	// TODO 源码: 提交事务
 			return retVal;
 		}
 
-		else {
-			Object result;
+		else {// TODO 源码: 编程式事务处理 new TransactionTemplate(transactionManager).execute(new TransactionCallback<Boolean>() {
+			Object result;		// TODO 源码: public Boolean doInTransaction(TransactionStatus status) { status.setRollbackOnly():回滚 } }
 			final ThrowableHolder throwableHolder = new ThrowableHolder();
 
 			// It's a CallbackPreferringPlatformTransactionManager: pass a TransactionCallback in.
@@ -473,7 +473,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
-				status = tm.getTransaction(txAttr);
+				status = tm.getTransaction(txAttr);	// TODO 源码: 获取TransactionStatus 获取事务核心逻辑
 			}
 			else {
 				if (logger.isDebugEnabled()) {
@@ -482,7 +482,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		}
-		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
+		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);	// TODO 源码: 根据指定属性和status准备TransactionInfo
 	}
 
 	/**
@@ -504,7 +504,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				logger.trace("Getting transaction for [" + txInfo.getJoinpointIdentification() + "]");
 			}
 			// The transaction manager will flag an error if an incompatible tx already exists.
-			txInfo.newTransactionStatus(status);
+			txInfo.newTransactionStatus(status);// TODO 源码: 记录事务的状态
 		}
 		else {
 			// The TransactionInfo.hasTransaction() method will return false. We created it only
@@ -543,12 +543,12 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @param ex throwable encountered
 	 */
 	protected void completeTransactionAfterThrowing(@Nullable TransactionInfo txInfo, Throwable ex) {
-		if (txInfo != null && txInfo.getTransactionStatus() != null) {
+		if (txInfo != null && txInfo.getTransactionStatus() != null) {// TODO 源码: 当抛出异常时首先判断当前是否存在事务
 			if (logger.isTraceEnabled()) {
 				logger.trace("Completing transaction for [" + txInfo.getJoinpointIdentification() +
 						"] after exception: " + ex);
 			}
-			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {
+			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {// TODO 源码: 判断是否抛出异常的依据: RuntimeException或Error
 				try {
 					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());
 				}
@@ -562,7 +562,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 					throw ex2;
 				}
 			}
-			else {
+			else {// TODO 源码: 如果不满足回滚条件,即使抛出异常也同样提交
 				// We don't roll back on this exception.
 				// Will still roll back if TransactionStatus.isRollbackOnly() is true.
 				try {

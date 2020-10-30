@@ -16,7 +16,7 @@
 
 package org.springframework.beans.factory;
 
-/**
+/** TODO 源码: 实现此接口的bean会再初始化时调用其afterPropertiesSet方法进行备案的逻辑初始化
  * Interface to be implemented by beans that need to react once all their properties
  * have been set by a {@link BeanFactory}: e.g. to perform custom initialization,
  * or merely to check that all mandatory properties have been set.

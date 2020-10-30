@@ -109,7 +109,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		}
 		else {
 			// We need to work it out.
-			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
+			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);// TODO 源码: 事务标签提取过程
 			// Put it in the cache.
 			if (txAttr == null) {
 				this.attributeCache.put(cacheKey, NULL_TRANSACTION_ATTRIBUTE);
@@ -155,29 +155,29 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		}
 
 		// The method may be on an interface, but we need attributes from the target class.
-		// If the target class is null, the method will be unchanged.
+		// If the target class is null, the method will be unchanged. TODO 源码: method代表接口中的方法,specificMethod代表实现类中的方法
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
-		// First try is the method in the target class.
+		// First try is the method in the target class. TODO 源码: 查看方法是否存在事务声明
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;
 		}
 
-		// Second try is the transaction attribute on the target class.
+		// Second try is the transaction attribute on the target class. TODO 源码: 查看方法所在类是否存在事务声明
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
 		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 			return txAttr;
 		}
-
+		// TODO 源码: 如果存在接口,则到进口去寻找
 		if (specificMethod != method) {
 			// Fallback is to look at the original method.
-			txAttr = findTransactionAttribute(method);
+			txAttr = findTransactionAttribute(method);// TODO 源码: 查找解耦方法
 			if (txAttr != null) {
 				return txAttr;
 			}
 			// Last fallback is the class of the original method.
-			txAttr = findTransactionAttribute(method.getDeclaringClass());
+			txAttr = findTransactionAttribute(method.getDeclaringClass());// TODO 源码: 到接口中的类中去寻找
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 				return txAttr;
 			}

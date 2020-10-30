@@ -38,8 +38,8 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 		if (targetClass != null && TransactionalProxy.class.isAssignableFrom(targetClass)) {
 			return false;
 		}
-		TransactionAttributeSource tas = getTransactionAttributeSource();
-		return (tas == null || tas.getTransactionAttribute(method, targetClass) != null);
+		TransactionAttributeSource tas = getTransactionAttributeSource();	// TODO 源码: 自定义标签解析时注入
+		return (tas == null || tas.getTransactionAttribute(method, targetClass) != null);// TODO 源码:  tas: AnnotationTransactionAttributeSource extends AbstractFallbackTransactionAttributeSource
 	}
 
 	@Override

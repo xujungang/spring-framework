@@ -105,7 +105,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		public static void configureAutoProxyCreator(Element element, ParserContext parserContext) {
 			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
 
-			String txAdvisorBeanName = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME;
+			String txAdvisorBeanName = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME;// TODO 源码: org.springframework.transaction.config.internalTransactionAdvisor
 			if (!parserContext.getRegistry().containsBeanDefinition(txAdvisorBeanName)) {
 				Object eleSource = parserContext.extractSource(element);
 
@@ -116,20 +116,20 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				sourceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
-				// Create the TransactionInterceptor definition.
+				// Create the TransactionInterceptor definition.	TODO 源码: TransactionInterceptor中的invoke方法完成了整个事务的逻辑
 				RootBeanDefinition interceptorDef = new RootBeanDefinition(TransactionInterceptor.class);
 				interceptorDef.setSource(eleSource);
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				registerTransactionManager(element, interceptorDef);
 				interceptorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
-				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
+				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);// TODO 源码: 注册bean,并使用spring中定义的规则生成beanName
 
-				// Create the TransactionAttributeSourceAdvisor definition.
+				// Create the TransactionAttributeSourceAdvisor definition. TODO 源码: advisorDef: TransactionAttributeSourceAdvisor
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-				advisorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
-				advisorDef.getPropertyValues().add("adviceBeanName", interceptorName);
+				advisorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));// TODO 源码: 将sourceName的bean注入advisorDef的transactionAttributeSource属性中
+				advisorDef.getPropertyValues().add("adviceBeanName", interceptorName);// TODO 源码: 将interceptorName的bean注入advisorDef的adviceBeanName属性
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}

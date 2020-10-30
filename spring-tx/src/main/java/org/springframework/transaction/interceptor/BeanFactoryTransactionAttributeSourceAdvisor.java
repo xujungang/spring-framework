@@ -21,10 +21,10 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 import org.springframework.lang.Nullable;
 
-/**
- * Advisor driven by a {@link TransactionAttributeSource}, used to include
- * a transaction advice bean for methods that are transactional.
- *
+/** TODO 源码: BeanFactoryTransactionAttributeSourceAdvisor作为Advisor的实现类,自然要遵从Advisor的处理方式,当代理被调用时会调用这个类的增强方法,也就是此bean的Advise,有因为在解析事务定义标签时
+ * Advisor driven by a {@link TransactionAttributeSource}, used to include  TODO 源码: 我们把TransactionInterceptor类型的bean注入到了BeanFactoryTransactionAttributeSourceAdvisor中,
+ * a transaction advice bean for methods that are transactional.			TODO 源码: 所以在调用事务增强器增强的代理类时,会首先执行TransactionInterceptor进行增强,
+ *																			TODO 源码: 同时,也就是在TransactionInterceptor类中的invoke方法中完成了整个事务的逻辑
  * @author Juergen Hoeller
  * @since 2.5.5
  * @see #setAdviceBeanName
