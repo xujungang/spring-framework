@@ -495,15 +495,15 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
-		initMultipartResolver(context);
-		initLocaleResolver(context);
-		initThemeResolver(context);
-		initHandlerMappings(context);
-		initHandlerAdapters(context);
-		initHandlerExceptionResolvers(context);
-		initRequestToViewNameTranslator(context);
-		initViewResolvers(context);
-		initFlashMapManager(context);
+		initMultipartResolver(context);			// TODO 源码: MultipartResolver: 主要处理文件上传
+		initLocaleResolver(context);			// TODO 源码: LocaleResolver: 国际化,有3种形式:基于URL参数的配置(?locale=zh_CN),基于session配置(检验用户会话汇总预置的属性accept-language),基于cookie的国际化配置
+		initThemeResolver(context);				// TODO 源码: ThemeResolver: 主题.包括:主题资源,主题解析器,拦截器
+		initHandlerMappings(context);			// TODO 源码: 当客户端发出Request请求时DispatcherServlet就会将Request提交给HandlerMapping,然后HandlerMapping根据WebApplicationContext配置来回传给DispatcherServlet相应的Controller
+		initHandlerAdapters(context);			// TODO 源码: 适配器默认有3个:HttpRequestHandlerAdapter(HTTP请求处理器适配器),SimpleControllerHandlerAdapter(简单控制器处理器适配器),AnnotationMethodHandlerAdapter(注解方法处理器适配器)
+		initHandlerExceptionResolvers(context);	// TODO 源码: 几月HandlerExceptionResolver接口的异常处理,使用这种方式只需要实现resolveException方法
+		initRequestToViewNameTranslator(context);// TODO 源码: RequestToViewNameTranslator解耦的getViewName方法实现view视图名称如何确定
+		initViewResolvers(context);				// TODO 源码: ViewResolvers接口定义了resolverViewName方法,根据viewName创建合适类型的View实现
+		initFlashMapManager(context);			// TODO 源码:
 	}
 
 	/**
@@ -922,7 +922,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
-			doDispatch(request, response);
+			doDispatch(request, response);	// TODO 源码: 将请求交给 doDispatch
 		}
 		finally {
 			if (!WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
@@ -957,21 +957,21 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
-				processedRequest = checkMultipart(request);
+				processedRequest = checkMultipart(request);// TODO 源码: 如果是MultipartContent类型的request,则转换request为MultipartHttpServletRequest类型的request
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
-				mappedHandler = getHandler(processedRequest);
-				if (mappedHandler == null) {
-					noHandlerFound(processedRequest, response);
+				mappedHandler = getHandler(processedRequest);	// TODO 源码: 根据request信息寻找对应的handler
+				if (mappedHandler == null) {// TODO 源码: 如果没有找到对应的Handler,则通过Response范阔错误信息
+					noHandlerFound(processedRequest, response);// TODO 源码: 返回404
 					return;
 				}
 
 				// Determine handler adapter for the current request.
-				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());// TODO 源码: 根据handler确定HandlerAdapter
 
 				// Process last-modified header, if supported by the handler.
-				String method = request.getMethod();
+				String method = request.getMethod();// TODO 源码: 如果当前handler支持last-modified头处理
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
 					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
@@ -982,20 +982,20 @@ public class DispatcherServlet extends FrameworkServlet {
 						return;
 					}
 				}
-
+				// TODO 源码: 执行拦截器的preHandle方法
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				// Actually invoke the handler.
-				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());// TODO 源码: 真正的执行handler并返回视图  SimpleControllerHandlerAdapter
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
-				applyDefaultViewName(processedRequest, mv);
-				mappedHandler.applyPostHandle(processedRequest, response, mv);
+				applyDefaultViewName(processedRequest, mv);	// TODO 源码: 视图名称处理
+				mappedHandler.applyPostHandle(processedRequest, response, mv);	// TODO 源码: 执行拦截器的postHandle方法
 			}
 			catch (Exception ex) {
 				dispatchException = ex;
@@ -1005,7 +1005,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
-			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);// TODO 源码: 处理结果
 		}
 		catch (Exception ex) {
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
@@ -1059,14 +1059,14 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 			else {
 				Object handler = (mappedHandler != null ? mappedHandler.getHandler() : null);
-				mv = processHandlerException(request, response, handler, exception);
+				mv = processHandlerException(request, response, handler, exception);// TODO 源码: 异常处理
 				errorView = (mv != null);
 			}
 		}
 
 		// Did the handler return a view to render?
 		if (mv != null && !mv.wasCleared()) {
-			render(mv, request, response);
+			render(mv, request, response);// TODO 源码: 如果在Handle实例的返回了view,那么需要作业面的处理
 			if (errorView) {
 				WebUtils.clearErrorRequestAttributes(request);
 			}
@@ -1084,7 +1084,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		if (mappedHandler != null) {
-			mappedHandler.triggerAfterCompletion(request, response, null);
+			mappedHandler.triggerAfterCompletion(request, response, null);// TODO 源码: 完成处理激活触发器
 		}
 	}
 
@@ -1221,11 +1221,11 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
 		if (this.handlerAdapters != null) {
-			for (HandlerAdapter ha : this.handlerAdapters) {
+			for (HandlerAdapter ha : this.handlerAdapters) {// TODO 源码: 遍历适配器来选择合适的返回它
 				if (logger.isTraceEnabled()) {
 					logger.trace("Testing handler adapter [" + ha + "]");
 				}
-				if (ha.supports(handler)) {
+				if (ha.supports(handler)) {	// TODO 源码: SimpleControllerHandlerAdapter 判断handler类型是不是controller
 					return ha;
 				}
 			}
@@ -1299,7 +1299,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		String viewName = mv.getViewName();
 		if (viewName != null) {
 			// We need to resolve the view name.
-			view = resolveViewName(viewName, mv.getModelInternal(), locale, request);
+			view = resolveViewName(viewName, mv.getModelInternal(), locale, request);// TODO 源码: 解析视图名称
 			if (view == null) {
 				throw new ServletException("Could not resolve view with name '" + mv.getViewName() +
 						"' in servlet with name '" + getServletName() + "'");
@@ -1322,7 +1322,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			if (mv.getStatus() != null) {
 				response.setStatus(mv.getStatus().value());
 			}
-			view.render(mv.getModelInternal(), request, response);
+			view.render(mv.getModelInternal(), request, response);// TODO 源码: 页面跳转  AbstractView
 		}
 		catch (Exception ex) {
 			if (logger.isDebugEnabled()) {
@@ -1364,7 +1364,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		if (this.viewResolvers != null) {
 			for (ViewResolver viewResolver : this.viewResolvers) {
-				View view = viewResolver.resolveViewName(viewName, locale);
+				View view = viewResolver.resolveViewName(viewName, locale);	// TODO 源码: AbstractCachingViewResolver
 				if (view != null) {
 					return view;
 				}

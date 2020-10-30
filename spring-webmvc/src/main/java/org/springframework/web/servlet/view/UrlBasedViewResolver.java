@@ -470,7 +470,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 			return null;
 		}
 
-		// Check for special "redirect:" prefix.
+		// Check for special "redirect:" prefix. TODO 源码: 处理前缀为"redirect:"
 		if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
 			String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
 			RedirectView view = new RedirectView(redirectUrl,
@@ -482,14 +482,14 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 			return applyLifecycleMethods(REDIRECT_URL_PREFIX, view);
 		}
 
-		// Check for special "forward:" prefix.
+		// Check for special "forward:" prefix. TODO 源码: 处理前缀为"forward:"
 		if (viewName.startsWith(FORWARD_URL_PREFIX)) {
 			String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
 			return new InternalResourceView(forwardUrl);
 		}
 
 		// Else fall back to superclass implementation: calling loadView.
-		return super.createView(viewName, locale);
+		return super.createView(viewName, locale);	// TODO 源码: AbstractCachingViewResolver
 	}
 
 	/**
@@ -548,11 +548,11 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 		Assert.state(viewClass != null, "No view class");
 
 		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(viewClass);
-		view.setUrl(getPrefix() + viewName + getSuffix());
+		view.setUrl(getPrefix() + viewName + getSuffix());	// TODO 源码: 添加前缀 和 后缀
 
 		String contentType = getContentType();
 		if (contentType != null) {
-			view.setContentType(contentType);
+			view.setContentType(contentType);// TODO 源码: 设置contextType
 		}
 
 		view.setRequestContextAttribute(getRequestContextAttribute());

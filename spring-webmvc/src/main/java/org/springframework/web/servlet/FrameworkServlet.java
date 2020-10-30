@@ -499,8 +499,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
-			this.webApplicationContext = initWebApplicationContext();
-			initFrameworkServlet();
+			this.webApplicationContext = initWebApplicationContext();	// TODO 源码: 初始化逻辑
+			initFrameworkServlet();	// TODO 源码: 由子类去实现
 		}
 		catch (ServletException | RuntimeException ex) {
 			logger.error("Context initialization failed", ex);
@@ -528,7 +528,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		WebApplicationContext wac = null;
 
-		if (this.webApplicationContext != null) {
+		if (this.webApplicationContext != null) {// TODO 源码: context在构造函数被注入的
 			// A context instance was injected at construction time -> use it
 			wac = this.webApplicationContext;
 			if (wac instanceof ConfigurableWebApplicationContext) {
@@ -541,7 +541,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 						// the root application context (if any; may be null) as the parent
 						cwac.setParent(rootContext);
 					}
-					configureAndRefreshWebApplicationContext(cwac);
+					configureAndRefreshWebApplicationContext(cwac);// TODO 源码: 刷新上下文环境
 				}
 			}
 		}
@@ -550,9 +550,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// has been registered in the servlet context. If one exists, it is assumed
 			// that the parent context (if any) has already been set and that the
 			// user has performed any initialization such as setting the context id
-			wac = findWebApplicationContext();
+			wac = findWebApplicationContext();	// TODO 源码: 根据contextAttribute属性加载 WebApplicationContext
 		}
-		if (wac == null) {
+		if (wac == null) {	// TODO 源码: 重新创建 WebApplicationContext 实例
 			// No context instance is defined for this servlet -> create a local one
 			wac = createWebApplicationContext(rootContext);
 		}
@@ -562,7 +562,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// support or the context injected at construction time had already been
 			// refreshed -> trigger initial onRefresh manually here.
 			synchronized (this.onRefreshMonitor) {
-				onRefresh(wac);
+				onRefresh(wac);	// TODO 源码: FrameworkServlet只是提供了一个方法,具体实现在 DispatcherSerlvet
 			}
 		}
 
@@ -619,7 +619,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
 	 */
 	protected WebApplicationContext createWebApplicationContext(@Nullable ApplicationContext parent) {
-		Class<?> contextClass = getContextClass();
+		Class<?> contextClass = getContextClass();// TODO 源码: 获取servlet的初始化参数contextClass, 默认值为 XMLWebApplicationContext
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug("Servlet with name '" + getServletName() +
 					"' will try to create custom WebApplicationContext context of class '" +
@@ -632,15 +632,15 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 					"] is not of type ConfigurableWebApplicationContext");
 		}
 		ConfigurableWebApplicationContext wac =
-				(ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
+				(ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);// TODO 源码: 通过反射实例化contextClass
 
 		wac.setEnvironment(getEnvironment());
-		wac.setParent(parent);
+		wac.setParent(parent);// TODO 源码: parent为ContextLoaderListener中创建的实例
 		String configLocation = getContextConfigLocation();
 		if (configLocation != null) {
 			wac.setConfigLocation(configLocation);
 		}
-		configureAndRefreshWebApplicationContext(wac);
+		configureAndRefreshWebApplicationContext(wac);// TODO 源码: 初始化Spring环境包括加载配置文件
 
 		return wac;
 	}
@@ -674,7 +674,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		postProcessWebApplicationContext(wac);
 		applyInitializers(wac);
-		wac.refresh();
+		wac.refresh();// TODO 源码: 加载配置文件,整合parent到wac
 	}
 
 	/**
@@ -955,7 +955,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		super.doTrace(request, response);
 	}
 
-	/**
+	/** TODO 源码: DispatcherServlet处理请求核心方法
 	 * Process this request, publishing an event regardless of the outcome.
 	 * <p>The actual event handling is performed by the abstract
 	 * {@link #doService} template method.
@@ -965,7 +965,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
-
+		// TODO 源码: 为了保证当前线程的LocaleContext以及RequestAttributes可以在当前请求后还能恢复,提取当前线程的两个属性
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
 		LocaleContext localeContext = buildLocaleContext(request);
 
@@ -978,7 +978,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
-			doService(request, response);
+			doService(request, response);// TODO 源码: 处理逻辑交给 doService
 		}
 		catch (ServletException | IOException ex) {
 			failureCause = ex;
@@ -990,7 +990,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
-			resetContextHolders(request, previousLocaleContext, previousAttributes);
+			resetContextHolders(request, previousLocaleContext, previousAttributes);// TODO 源码: 恢复线程的原始状态
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
@@ -1009,7 +1009,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 
-			publishRequestHandledEvent(request, response, startTime, failureCause);
+			publishRequestHandledEvent(request, response, startTime, failureCause);// TODO 源码: 无论请求成功过失败,都发布事件通知
 		}
 	}
 

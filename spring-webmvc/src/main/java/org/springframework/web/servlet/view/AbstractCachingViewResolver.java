@@ -146,8 +146,8 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 	@Override
 	@Nullable
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
-		if (!isCache()) {
-			return createView(viewName, locale);
+		if (!isCache()) {// TODO 源码: 缓存不存在,直接创建视图
+			return createView(viewName, locale);// TODO 源码: UrlBasedViewResolver
 		}
 		else {
 			Object cacheKey = getCacheKey(viewName, locale);
@@ -246,7 +246,7 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 	 */
 	@Nullable
 	protected View createView(String viewName, Locale locale) throws Exception {
-		return loadView(viewName, locale);
+		return loadView(viewName, locale);// TODO 源码: UrlBasedViewResolver
 	}
 
 	/**

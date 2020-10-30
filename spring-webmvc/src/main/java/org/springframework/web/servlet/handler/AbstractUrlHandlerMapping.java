@@ -119,26 +119,26 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	@Override
 	@Nullable
 	protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
-		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
-		Object handler = lookupHandler(lookupPath, request);
+		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);// TODO 源码: 截取用于匹配的url有效路径
+		Object handler = lookupHandler(lookupPath, request);// TODO 源码: 根据路径查找handler
 		if (handler == null) {
 			// We need to care for the default handler directly, since we need to
 			// expose the PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE for it as well.
 			Object rawHandler = null;
-			if ("/".equals(lookupPath)) {
+			if ("/".equals(lookupPath)) {// TODO 源码: 如果请求地址是"/",使用RootHandler进行处理
 				rawHandler = getRootHandler();
 			}
-			if (rawHandler == null) {
+			if (rawHandler == null) {// TODO 源码: 无法找到handler,使用默认handler
 				rawHandler = getDefaultHandler();
 			}
 			if (rawHandler != null) {
 				// Bean name or resolved handler?
-				if (rawHandler instanceof String) {
+				if (rawHandler instanceof String) {// TODO 源码: 根据beanName获取对应的bean
 					String handlerName = (String) rawHandler;
 					rawHandler = obtainApplicationContext().getBean(handlerName);
 				}
-				validateHandler(rawHandler, request);
-				handler = buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null);
+				validateHandler(rawHandler, request);// TODO 源码: 交给子类实现
+				handler = buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null);// TODO 源码:
 			}
 		}
 		if (handler != null && logger.isDebugEnabled()) {
@@ -165,7 +165,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	 */
 	@Nullable
 	protected Object lookupHandler(String urlPath, HttpServletRequest request) throws Exception {
-		// Direct match?
+		// Direct match? TODO 源码: 直接通过url匹配
 		Object handler = this.handlerMap.get(urlPath);
 		if (handler != null) {
 			// Bean name or resolved handler?
@@ -177,7 +177,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			return buildPathExposingHandler(handler, urlPath, urlPath, null);
 		}
 
-		// Pattern match?
+		// Pattern match? TODO 源码: 通过通配符匹配
 		List<String> matchingPatterns = new ArrayList<>();
 		for (String registeredPattern : this.handlerMap.keySet()) {
 			if (getPathMatcher().match(registeredPattern, urlPath)) {
@@ -231,7 +231,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			if (logger.isDebugEnabled()) {
 				logger.debug("URI Template variables for request [" + urlPath + "] are " + uriTemplateVariables);
 			}
-			return buildPathExposingHandler(handler, bestMatch, pathWithinMapping, uriTemplateVariables);
+			return buildPathExposingHandler(handler, bestMatch, pathWithinMapping, uriTemplateVariables);// TODO 源码: 将handler封装成 HandlerExecutionChain 类型
 		}
 
 		// No handler found...

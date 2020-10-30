@@ -150,15 +150,15 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 			logger.debug("Initializing servlet '" + getServletName() + "'");
 		}
 
-		// Set bean properties from init parameters.
+		// Set bean properties from init parameters. TODO 源码: 解析init-param并封装到 PropertyValues 中
 		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
 		if (!pvs.isEmpty()) {
 			try {
-				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);// TODO 源码: 将当前的这个servlet类转换成为一个BeanWrapper,从而能够以Spring的方式来对init-param的值进行注入
 				ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
-				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
-				initBeanWrapper(bw);
-				bw.setPropertyValues(pvs, true);
+				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));// TODO 源码: 注册自定义属性编辑器,一旦遇到Resource类型的属性将会使用ResourceEditor进行解析
+				initBeanWrapper(bw);// TODO 源码: 空实现,留给子类
+				bw.setPropertyValues(pvs, true);// TODO 源码: 属性注入
 			}
 			catch (BeansException ex) {
 				if (logger.isErrorEnabled()) {
@@ -169,7 +169,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		}
 
 		// Let subclasses do whatever initialization they like.
-		initServletBean();
+		initServletBean();	// TODO 源码: FrameworkServlet
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Servlet '" + getServletName() + "' configured successfully");
@@ -214,7 +214,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 */
 	private static class ServletConfigPropertyValues extends MutablePropertyValues {
 
-		/**
+		/** TODO 源码: 封装和校验属性
 		 * Create new ServletConfigPropertyValues.
 		 * @param config ServletConfig we'll use to take PropertyValues from
 		 * @param requiredProperties set of property names we need, where
