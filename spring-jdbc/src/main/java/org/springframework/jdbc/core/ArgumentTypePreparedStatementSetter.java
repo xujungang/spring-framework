@@ -59,9 +59,9 @@ public class ArgumentTypePreparedStatementSetter implements PreparedStatementSet
 	public void setValues(PreparedStatement ps) throws SQLException {
 		int parameterPosition = 1;
 		if (this.args != null && this.argTypes != null) {
-			for (int i = 0; i < this.args.length; i++) {
+			for (int i = 0; i < this.args.length; i++) {	// TODO 源码: 遍历所有参数进行类型匹配及转换
 				Object arg = this.args[i];
-				if (arg instanceof Collection && this.argTypes[i] != Types.ARRAY) {
+				if (arg instanceof Collection && this.argTypes[i] != Types.ARRAY) {	// TODO 源码:  如果是集合,需要进入集合内部递归解析集合内部属性
 					Collection<?> entries = (Collection<?>) arg;
 					for (Object entry : entries) {
 						if (entry instanceof Object[]) {
@@ -78,7 +78,7 @@ public class ArgumentTypePreparedStatementSetter implements PreparedStatementSet
 					}
 				}
 				else {
-					doSetValue(ps, parameterPosition, this.argTypes[i], arg);
+					doSetValue(ps, parameterPosition, this.argTypes[i], arg);// TODO 源码: 解析当前属性
 					parameterPosition++;
 				}
 			}

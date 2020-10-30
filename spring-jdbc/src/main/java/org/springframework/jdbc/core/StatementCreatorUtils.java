@@ -228,7 +228,7 @@ public abstract class StatementCreatorUtils {
 			setNull(ps, paramIndex, sqlTypeToUse, typeNameToUse);
 		}
 		else {
-			setValue(ps, paramIndex, sqlTypeToUse, typeNameToUse, scale, inValueToUse);
+			setValue(ps, paramIndex, sqlTypeToUse, typeNameToUse, scale, inValueToUse);	// TODO 源码: 根据个类型设置值
 		}
 	}
 

@@ -595,17 +595,17 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			String sql = getSql(psc);
 			logger.debug("Executing prepared SQL statement" + (sql != null ? " [" + sql + "]" : ""));
 		}
-
+		// TODO 源码: 获取数据库连接
 		Connection con = DataSourceUtils.getConnection(obtainDataSource());
 		PreparedStatement ps = null;
 		try {
 			ps = psc.createPreparedStatement(con);
-			applyStatementSettings(ps);
-			T result = action.doInPreparedStatement(ps);
-			handleWarnings(ps);
+			applyStatementSettings(ps);					// TODO 源码: 设置参数
+			T result = action.doInPreparedStatement(ps);// TODO 源码: 调用回调函数赋值
+			handleWarnings(ps);	// TODO 源码: 警告处理
 			return result;
 		}
-		catch (SQLException ex) {
+		catch (SQLException ex) {// TODO 源码: 释放数据库连接.避免异常转换器没有被初始化的时候出现潜在的连接池死锁
 			// Release Connection early, to avoid potential connection pool deadlock
 			// in the case when the exception translator hasn't been initialized yet.
 			if (psc instanceof ParameterDisposer) {
@@ -663,7 +663,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 						pss.setValues(ps);
 					}
 					rs = ps.executeQuery();
-					return rse.extractData(rs);
+					return rse.extractData(rs);	// TODO 源码: 将结果进行封装并转换成POJO. rse:RowMapperResultSetExtractor
 				}
 				finally {
 					JdbcUtils.closeResultSet(rs);
@@ -846,10 +846,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 
 		logger.debug("Executing prepared SQL update");
 
-		return updateCount(execute(psc, ps -> {
-			try {
+		return updateCount(execute(psc, ps -> {	// TODO 源码: public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) {
+			try {								// TODO 源码: 							action.doInPreparedStatement(ps = c.createPreparedStatement(con))
 				if (pss != null) {
-					pss.setValues(ps);
+					pss.setValues(ps);	// TODO 源码: 设置PreparedStatement所需的全部参数
 				}
 				int rows = ps.executeUpdate();
 				if (logger.isDebugEnabled()) {
@@ -1315,13 +1315,13 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	 * @see org.springframework.jdbc.datasource.DataSourceUtils#applyTransactionTimeout
 	 */
 	protected void applyStatementSettings(Statement stmt) throws SQLException {
-		int fetchSize = getFetchSize();
+		int fetchSize = getFetchSize();	// TODO 源码: 是为了减少网络交互次数设计的.调用resultSet.next时一次性从服务器上取得多行数据回来.
 		if (fetchSize != -1) {
 			stmt.setFetchSize(fetchSize);
 		}
 		int maxRows = getMaxRows();
 		if (maxRows != -1) {
-			stmt.setMaxRows(maxRows);
+			stmt.setMaxRows(maxRows);	// TODO 源码: Statement对象生成的所有ResultSet对象可以包含的最大行数限制
 		}
 		DataSourceUtils.applyTimeout(stmt, getDataSource(), getQueryTimeout());
 	}
@@ -1357,7 +1357,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	 * @see org.springframework.jdbc.SQLWarningException
 	 */
 	protected void handleWarnings(Statement stmt) throws SQLException {
-		if (isIgnoreWarnings()) {
+		if (isIgnoreWarnings()) {	// TODO 源码: 设置为忽略警告时,只尝试打日志
 			if (logger.isDebugEnabled()) {
 				SQLWarning warningToLog = stmt.getWarnings();
 				while (warningToLog != null) {

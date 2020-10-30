@@ -113,7 +113,7 @@ public abstract class DataSourceUtils {
 
 		logger.debug("Fetching JDBC Connection from DataSource");
 		Connection con = fetchConnection(dataSource);
-
+		// TODO 源码: 当前线程支持同步
 		if (TransactionSynchronizationManager.isSynchronizationActive()) {
 			try {
 				// Use same Connection for further JDBC actions within the transaction.
@@ -125,7 +125,7 @@ public abstract class DataSourceUtils {
 				else {
 					holderToUse.setConnection(con);
 				}
-				holderToUse.requested();
+				holderToUse.requested();	// TODO 源码: 记录数据库连接
 				TransactionSynchronizationManager.registerSynchronization(
 						new ConnectionSynchronization(holderToUse, dataSource));
 				holderToUse.setSynchronizedWithTransaction(true);
@@ -335,7 +335,7 @@ public abstract class DataSourceUtils {
 		if (con == null) {
 			return;
 		}
-		if (dataSource != null) {
+		if (dataSource != null) {// TODO 源码: 当前线程存在事务的情况下说明存在共用数据库连接,使用ConnectionHolder.released方法进行连接数减一,而不是真正释放连接
 			ConnectionHolder conHolder = (ConnectionHolder) TransactionSynchronizationManager.getResource(dataSource);
 			if (conHolder != null && connectionEquals(conHolder, con)) {
 				// It's the transactional Connection: Don't close it.
@@ -343,7 +343,7 @@ public abstract class DataSourceUtils {
 				return;
 			}
 		}
-		doCloseConnection(con, dataSource);
+		doCloseConnection(con, dataSource);	// TODO 源码: 关闭数据库连接
 	}
 
 	/**
