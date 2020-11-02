@@ -990,7 +990,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
-			resetContextHolders(request, previousLocaleContext, previousAttributes);// TODO 源码: 恢复线程的原始状态
+			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
@@ -1009,7 +1009,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 
-			publishRequestHandledEvent(request, response, startTime, failureCause);// TODO 源码: 无论请求成功过失败,都发布事件通知
+			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}
 

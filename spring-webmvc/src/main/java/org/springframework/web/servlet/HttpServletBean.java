@@ -169,7 +169,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		}
 
 		// Let subclasses do whatever initialization they like.
-		initServletBean();	// TODO 源码: FrameworkServlet
+		initServletBean();	// TODO 源码: 调用子类,继续初始化. 子类: FrameworkServlet
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Servlet '" + getServletName() + "' configured successfully");

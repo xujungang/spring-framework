@@ -133,7 +133,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			}
 			if (rawHandler != null) {
 				// Bean name or resolved handler?
-				if (rawHandler instanceof String) {// TODO 源码: 根据beanName获取对应的bean
+				if (rawHandler instanceof String) {// TODO 源码: 根据beanName获取对应的bean,SpringMVC配置的beanName为"/xxx"
 					String handlerName = (String) rawHandler;
 					rawHandler = obtainApplicationContext().getBean(handlerName);
 				}

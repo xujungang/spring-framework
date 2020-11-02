@@ -581,7 +581,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		this.handlerMappings = null;
 
 		if (this.detectAllHandlerMappings) {
-			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
+			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts. // TODO 源码: 建立url与HandlerMapping的映射关系
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
