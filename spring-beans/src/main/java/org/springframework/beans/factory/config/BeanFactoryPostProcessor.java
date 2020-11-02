@@ -18,7 +18,7 @@ package org.springframework.beans.factory.config;
 
 import org.springframework.beans.BeansException;
 
-/**
+/** TODO 源码: 允许在BeanDefinition被加载后进行定制化处理,例如修改BeanDefinition的属性值.beanFactory.getBeanDefinition()方法可以拿到BeanDefinition对象
  * Allows for custom modification of an application context's bean definitions,
  * adapting the bean property values of the context's underlying bean factory.
  *

@@ -19,10 +19,10 @@ package org.springframework.beans.factory.support;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 
-/**
- * Extension to the standard {@link BeanFactoryPostProcessor} SPI, allowing for
- * the registration of further bean definitions <i>before</i> regular
- * BeanFactoryPostProcessor detection kicks in. In particular,
+/** TODO 源码: 对标准beanFactoryPostProcessorSPI的扩展，允许在常规BeanFactoryPostProcessor检测开始之前注册更多的bean定义。
+ * Extension to the standard {@link BeanFactoryPostProcessor} SPI, allowing for	TODO 源码: 特别是，BeanDefinitionRegistryPostProcessor可以注册更多的bean定义，
+ * the registration of further bean definitions <i>before</i> regular			TODO 源码: 这些定义反过来定义BeanFactoryPostProcessor实例。
+ * BeanFactoryPostProcessor detection kicks in. In particular,					TODO 源码: 例如: Mybatis就是通过实现这个接口实现了Mapper包的扫描
  * BeanDefinitionRegistryPostProcessor may register further bean definitions
  * which in turn define BeanFactoryPostProcessor instances.
  *
